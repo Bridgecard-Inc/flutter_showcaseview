@@ -39,12 +39,14 @@ class ToolTipWidget extends StatefulWidget {
   final Color? tooltipColor;
   final Color? textColor;
   final bool showArrow;
+  final bool isArrowPositionUp;
   final double? contentHeight;
   final double? contentWidth;
   final VoidCallback? onTooltipTap;
   final EdgeInsets? contentPadding;
   final Duration animationDuration;
   final bool disableAnimation;
+  final Widget child;
 
   ToolTipWidget({
     required this.position,
@@ -58,10 +60,12 @@ class ToolTipWidget extends StatefulWidget {
     required this.tooltipColor,
     required this.textColor,
     required this.showArrow,
+    required this.isArrowPositionUp,
     required this.contentHeight,
     required this.contentWidth,
     required this.onTooltipTap,
     required this.animationDuration,
+    required this.child,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     required this.disableAnimation,
   });
@@ -100,6 +104,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   }
 
   double _getTooltipWidth() {
+    return 350.0;
     final titleStyle = widget.titleTextStyle ??
         Theme.of(context)
             .textTheme
@@ -218,7 +223,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   Widget build(BuildContext context) {
     position = widget.offset;
     final contentOrientation = findPositionForContent(position!);
-    final contentOffsetMultiplier = contentOrientation == "BELOW" ? 1.0 : -1.0;
+    final contentOffsetMultiplier = widget.isArrowPositionUp ? 1.0 : -1.0;
     isArrowUp = contentOffsetMultiplier == 1.0;
 
     final contentY = isArrowUp
@@ -236,10 +241,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       paddingBottom = 10;
     }
 
-    final arrowWidth = 18.0;
-    final arrowHeight = 9.0;
+    final arrowWidth = 30.0;
+    final arrowHeight = 28.0;
 
-    if (widget.container == null) {
+    if (widget.container != null) {
       return Positioned(
         top: contentY,
         left: _getLeft(),
@@ -254,12 +259,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             child: Material(
               color: Colors.transparent,
               child: Container(
-                padding: widget.showArrow
-                    ? EdgeInsets.only(
-                        top: paddingTop - (isArrowUp ? arrowHeight : 0),
-                        bottom: paddingBottom - (isArrowUp ? 0 : arrowHeight),
-                      )
-                    : null,
+                // padding: widget.showArrow
+                //     ? EdgeInsets.only(
+                //         top: paddingTop - (isArrowUp ? arrowHeight : 0),
+                //         bottom: paddingBottom - (isArrowUp ? 0 : arrowHeight),
+                //       )
+                //     : null,
                 child: Stack(
                   alignment: isArrowUp
                       ? Alignment.topLeft
@@ -303,47 +308,13 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                         child: GestureDetector(
                           onTap: widget.onTooltipTap,
                           child: Container(
+                            decoration: BoxDecoration(
+                              color: widget.tooltipColor,
+                              borderRadius: BorderRadius.circular(26),
+                            ),
                             width: _getTooltipWidth(),
                             padding: widget.contentPadding,
-                            color: widget.tooltipColor,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: widget.title != null
-                                      ? CrossAxisAlignment.start
-                                      : CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    widget.title != null
-                                        ? Text(
-                                            widget.title!,
-                                            style: widget.titleTextStyle ??
-                                                Theme.of(context)
-                                                    .textTheme
-                                                    .headline6!
-                                                    .merge(
-                                                      TextStyle(
-                                                        color: widget.textColor,
-                                                      ),
-                                                    ),
-                                          )
-                                        : SizedBox(),
-                                    Text(
-                                      widget.description!,
-                                      style: widget.descTextStyle ??
-                                          Theme.of(context)
-                                              .textTheme
-                                              .subtitle2!
-                                              .merge(
-                                                TextStyle(
-                                                  color: widget.textColor,
-                                                ),
-                                              ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
+                            child: widget.container,
                           ),
                         ),
                       ),

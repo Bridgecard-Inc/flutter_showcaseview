@@ -58,6 +58,7 @@ class Showcase extends StatefulWidget {
   final bool? disposeOnTap;
   final bool disableAnimation;
   final EdgeInsets overlayPadding;
+  final bool isArrowPositionUp;
 
   /// Defines blur value.
   /// This will blur the background while displaying showcase.
@@ -70,8 +71,11 @@ class Showcase extends StatefulWidget {
   const Showcase({
     required this.key,
     required this.child,
+    this.container,
+    this.height,
+    this.width,
     this.title,
-    required this.description,
+    this.description,
     this.shapeBorder,
     this.overlayColor = Colors.black45,
     this.overlayOpacity = 0.75,
@@ -80,6 +84,7 @@ class Showcase extends StatefulWidget {
     this.showcaseBackgroundColor = Colors.white,
     this.textColor = Colors.black,
     this.showArrow = true,
+    this.isArrowPositionUp = false,
     this.onTargetClick,
     this.disposeOnTap,
     this.animationDuration = const Duration(milliseconds: 2000),
@@ -90,10 +95,7 @@ class Showcase extends StatefulWidget {
     this.overlayPadding = EdgeInsets.zero,
     this.blurValue,
     this.radius,
-  })  : height = null,
-        width = null,
-        container = null,
-        assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
+  })  : assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
             "overlay opacity must be between 0 and 1."),
         assert(
             onTargetClick == null
@@ -129,6 +131,7 @@ class Showcase extends StatefulWidget {
     this.contentPadding = const EdgeInsets.symmetric(vertical: 8),
     this.overlayPadding = EdgeInsets.zero,
     this.blurValue,
+    this.isArrowPositionUp = false,
   })  : showArrow = false,
         onToolTipClick = null,
         assert(overlayOpacity >= 0.0 && overlayOpacity <= 1.0,
@@ -292,6 +295,8 @@ class _ShowcaseState extends State<Showcase> {
                 contentPadding: widget.contentPadding,
                 disableAnimation: widget.disableAnimation,
                 animationDuration: widget.animationDuration,
+                child: widget.container!,
+                isArrowPositionUp: widget.isArrowPositionUp,
               ),
             ],
           )
